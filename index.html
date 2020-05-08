@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <br>
+        <div class="card-columns" id="app">
+            
+        </div>
+    </div>
+    <script>
+        let apikey = "WrpAwRZJ0lMJueZv9a8IW9YHdaeEab6x"
+        let url = `https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${apikey}`
+        fetch(url)
+        .then((resp) => resp.json())
+        .then(function(data) {console.log(data['results']);
+        for(res in data['results']){
+            generateCard(data['results'][res])
+        }})
+        function generateCard(data){
+            console.log(data);
+            rowElement = document.getElementById("app");
+            cardContainer = document.createElement("div");
+            cardContainer.classList.add("card");
+            cardContainer.onclick = function(){
+                window.open(data['short_url'],'_blank')
+            }
+
+            rowContainer = document.createElement("div");
+            rowContainer.classList.add("row")
+            rowContainer.classList.add("card-body")
+
+            col1 = document.createElement("div")
+            col1.classList.add("col")
+
+            sectionTag = document.createElement("p");
+            sectionTag.classList.add("section")
+            sectionTag.innerHTML = capitalizeFirstLetter(data['section'])
+
+            ItemType = document.createElement("small")
+            ItemType.classList.add("text-muted");
+            ItemType.innerHTML = capitalizeFirstLetter(data['item_type'])
+
+            TitleContainer = document.createElement("h6");
+            TitleContainer.classList.add("card-title");
+            TitleContainer.innerHTML = capitalizeFirstLetter(data['title'])
+
+            PostedData = document.createElement("small")
+            PostedData.classList.add("text-muted");
+            PostedData.innerHTML = capitalizeFirstLetter(data['created_date'])
+
+            AbstractData = document.createElement("p");
+            AbstractData.classList.add("card-text");
+            AbstractData.innerHTML = capitalizeFirstLetter(data['abstract'])
+
+            col1.appendChild(sectionTag)
+            col1.appendChild(ItemType)
+            col1.appendChild(TitleContainer)
+            col1.appendChild(PostedData)
+            col1.appendChild(AbstractData);
+
+            col2 = document.createElement("div")
+            col2.classList.add("col")
+
+            imageContainer = document.createElement("img");
+            imageContainer.classList.add("card-img-top");
+            imageContainer.src = data['multimedia'][4]['url'];
+            col2.appendChild(imageContainer);
+
+            rowContainer.appendChild(col1);
+            rowContainer.appendChild(col2);
+
+            cardContainer.appendChild(rowContainer);
+            if(data['byline']!=""){
+                cardFooter = document.createElement("div")
+                cardFooter.classList.add("card-footer")
+
+                byline = document.createElement("small")
+                byline.classList.add("text-muted")
+                byline.innerHTML = capitalizeFirstLetter(data['byline'])
+
+                cardFooter.appendChild(byline)
+                cardContainer.appendChild(cardFooter)
+            }
+
+            
+            rowElement.appendChild(cardContainer);
+            
+        }
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+/*         <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 3 mins ago</small>
+            </div>
+        </div> */
+    </script>
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</html>
